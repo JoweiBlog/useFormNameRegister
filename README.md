@@ -1,15 +1,14 @@
 # useFormNameRegister
 
-form / Ant Design From - name TS检查
+Form、Ant Design From - Name Path type checking
 
-Ant Design 表单组件对 `name`、`dependencies`、`validateFields`、`setFieldValue` 等等的字段名使用泛型 `NamePath` 类型。这使得将字段名与业务字段关联变得困难，导致 TypeScript 无法有效地检查字段更改。开发人员须手动搜索字段名才能识别代码更新逻辑（回到 JavaScript 中）。
+Ant Design form component has a generic `NamePath` type for its field names. It covers `name`, `dependencies`, `validateFields`, `setFieldValue` etc. This makes it hard for developers to connect field name with business field name, and TypeScript can not validate the field change effectively. Developers need to manually scan the field name to figure out the code update logic (back to JavaScript).
 
-提供两种注册name的方法，它们可以增强 TypeScript 检查，从而减少漏掉字段的可能性，改善开发体验。
+Provide two ways to register the names, which can help with TypeScript checking and reduce the missing of field name, to improve the develop experience.
 
+### Register common field name
 
-### 注册通用field name
-
-一般在原生form表单中使用，作唯一key时比较有用
+This is generally used in native form, and is more useful when used as a unique key.
 ```ts
 interface Entity {
   name: string;
@@ -31,9 +30,9 @@ const Pages = () => {
 };
 ```
 
-### 注册And Design form name
+### Register Ant Design form field name
 
-通用数组field name, 可以应用与`name`、`dependencies`、`validateFields`、`setFieldValue` 等大多数场景。
+This is for common array field name, and can be used in most of the scenes, such as `name`, `dependencies`, `validateFields`, `setFieldValue`.
 ```ts
 interface Entity {
   name: string;
@@ -45,7 +44,7 @@ interface Entity {
 const Pages = () => {
   const [form] = Form.useForm<Entity>();
   const { r } = useFormNameRegister<Entity>();
-  // 如果有涉及到Form.List等应用场景，可以注册多个`r`完成不同类检查
+  // In the case of `Form.List`, you can register other `r` for different entity type checking.
   // const { r: _r } = useFormNameRegister<Entity["books"]>();
   // _r([`0`, "name"]);
 
@@ -60,7 +59,7 @@ const Pages = () => {
         ></Input>
       </Form.Item>
       <Form.Item name={r(["address", "0"])}>...</Form.Item>
-      {/* 仅需在原代码上加`r`函数，关联ts检查；（其他场景亦是） */}
+      {/* Only need to add `r` function in the original code to connect type checking; (the same applies to other scenes)  */}
       {/* <Form.Item dependencies={[["address", "0"]])> */}
       <Form.Item dependencies={r([["address", "0"]])}>
         {() => <Form.Item name={r(["address", "1"])}>...</Form.Item>}
